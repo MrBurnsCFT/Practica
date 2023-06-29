@@ -1,0 +1,30 @@
+<div class="alert alert-primary" role="alert">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="row" colspan="3" class="text-center">CARRITO</th>
+            </tr>
+            <tr>
+                <th scope="col">NOMBRE</th>
+                <th scope="col">PRECIO</th>
+                <th scope="col">CANTIDAD</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if request.session.carrito.items %}
+            {% for key, value in request.session.carrito.items %}
+            <tr>
+                <td>{{value.nombre}}</td>
+                <td>{{value.precio}}</td>
+                <td>{{value.acumulado}}</td>
+                <a href="{% url 'tienda value.producto.id' %}" class="badge btn btn-dark badge-dark">+</a>
+                <a href="{% url 'tienda value.producto.id' %}" class="badge btn btn-dark badge-dark">-</a>
+            </tr>
+            {% endfor %}
+            
+            {% endif %}
+        </tbody>
+
+    </table>
+
+</div>
