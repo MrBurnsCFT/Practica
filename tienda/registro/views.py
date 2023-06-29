@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
+from .forms import ReporteForm
+from .models import Reporte
 
 # Create your views here.
 
@@ -67,7 +69,26 @@ def signout(request):
 def soporte(request):
     return render(request, 'registro/soporte.html')
 
+def reporte(request):
+    if request.method == 'GET':
+        return render(request, 'registro/reporte.html', {
+            'form': ReporteForm
+        })
+    else:
+        try:
+            form = ReporteForm(request.POST)
+            new_reporte = form.save(commit=False)
+            new_reporte.user = request.user
+            new_reporte.save()
+            return render(request, 'registro/reporte.html')
+        except ValueError:
+            return render(request, 'registro/reporte.html', {
+                'form': ReporteForm,
+                'error': 'Complete todos los campos'
+            })
+            
 def detalle(request):
-    return render(request, 'registro/detalle.html')
+    detalle = Reporte.objects.filter(user=request.user)
+    return render(request, 'registro/detalle.html', {'reporte': reporte})
 
 
