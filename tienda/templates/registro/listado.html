@@ -1,0 +1,22 @@
+{% extends 'registro/base.html' %}
+
+{% block contenido %}
+<h1>Reportes y Comentarios - Recibidos</h1>
+<h3>Listado</h3>
+    <ul class="list-group">
+        {% for reporte in reportes %}
+            <a class="list-group-item" href="{% url 'soporte/listado.html' reporte.id %}">
+                {% if Reporte.important %}
+                <strong><h1>{{Reporte.title }}</h1></strong>
+                
+                {% else %}
+                {{Reporte.title}}
+                
+                {% endif %}
+                <p>{{Reporte.description}} </p>
+                <p>{{Reporte.user.username}} </p>
+            </a>
+        {% endfor %}
+    </ul>
+
+{% endblock  %}

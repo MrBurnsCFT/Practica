@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
@@ -6,9 +6,12 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from .forms import ReporteForm
 from .models import Reporte
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required
 def base(request):
     return render(request, 'registro/base.html')
 
@@ -55,20 +58,18 @@ def signin(request):
             })
         else:
             login(request, user)
-            return redirect('inicio', {
+            return render(request, 'front/index.html', {
                 'saludo': 'Bienvenido nuevamente'
             })
 
-
+@login_required
 def signout(request):
     logout(request)
     return render(request, 'registro/logout.html', {
         'despedida': 'Gracias por visitarnos, te esperamos de nuevo pronto'
     })
 
-def soporte(request):
-    return render(request, 'registro/soporte.html')
-
+@login_required
 def reporte(request):
     if request.method == 'GET':
         return render(request, 'registro/reporte.html', {
@@ -87,8 +88,14 @@ def reporte(request):
                 'error': 'Complete todos los campos'
             })
             
-def detalle(request):
-    detalle = Reporte.objects.filter(user=request.user)
-    return render(request, 'registro/detalle.html', {'reporte': reporte})
+@login_required            
+def listado(request):
+    reportes = Reporte.objects.filter(user=request.user)
+    return render(request, 'registro/listado.html', {'reportes': reportes})
+
+@login_required
+def detalle(request, reporte_id):
+    reporte = get_object_or_404(Reporte, pk=reporte_id)
+    return render(request, 'registro/detalle.html')
 
 
